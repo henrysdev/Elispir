@@ -38,21 +38,30 @@ defmodule Elisper do
   #   State.Map.get(context, func).(for expr <- args, do: eval(expr))
   # end
 
-  def eval([expr | _], context) when is_list(expr) do
-    IO.inspect(expr, label: "expr")
+  def eval_fn(expr, context) do
     case expr do
       ["def", varname | rest] -> State.Map.put(context, varname, eval(rest, context))
       ["defn", fnname | rest] -> State.Map.put(context, fnname, eval(rest, context))
-      [func | args] -> State.Map.get(context, func).(for expr <- args, do: eval(expr, context))
+      [func | args] -> (eval(func, context)).(for expr <- args, do: eval(expr, context))
     end
   end
+
+
+  def eval([expr | _], context) when is_list(expr) do
+    IO.inspect(expr, label: "eval> expr")
+    eval_fn(expr, context)
+  end
+  def eval(expr, context) when is_list(expr) do
+    IO.inspect(expr, label: "eval> expr")
+    eval_fn(expr, context)
+  end
   def eval(atom, context) when is_number(atom) do
-    IO.inspect(atom, label: "expr")
+    IO.inspect(atom, label: "eval> number")
     atom
   end
   def eval(atom, context) do
     atom = State.Map.get(context, atom)
-    IO.inspect(atom, label: "expr")
+    IO.inspect(atom, label: "eval> atom")
     atom
   end
 

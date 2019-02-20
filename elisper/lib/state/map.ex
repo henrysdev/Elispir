@@ -5,11 +5,15 @@ defmodule State.Map do
 
   def start_link do  
     Agent.start_link(fn -> %{
-      "+" => &Enum.reduce(&1, 0, fn x, acc -> x + acc end)
+      "+" => &Enum.reduce(&1, fn x, acc -> acc + x end),
+      "-" => &Enum.reduce(&1, fn x, acc -> acc - x end),
+      "*" => &Enum.reduce(&1, fn x, acc -> acc * x end),
+      "/" => &Enum.reduce(&1, fn x, acc -> acc / x end),
     } end)  
   end
 
   def get(pid, key) do
+    IO.inspect(key, label: "key")
     Agent.get(pid, &Map.get(&1, key))
   end  
 
