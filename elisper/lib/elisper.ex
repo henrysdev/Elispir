@@ -1,4 +1,7 @@
 defmodule Elisper do
+
+  # import Stack
+
   @moduledoc """
   Documentation for Elisper.
   """
@@ -12,11 +15,26 @@ defmodule Elisper do
       :world
 
   """
+
+
+  @doc false
+  defp parse(["(" | t], accum) do
+    {rest, expression} = parse(t, [])
+    IO.inspect(sub_tree, label: "sub_tree")
+    parse(rest, [expression | accum])
+  end
+  defp parse([")" | t], accum), do: {t, Enum.reverse(accum)}
+  defp parse([], accum), do: Enum.reverse(accum)
+  defp parse([h | t], accum), do: parse(t, [h | accum])
+  #defp parse([h | t], accum), do: parse(t, [atom(h) | accum])
+
+
   def read(code) do
-    tokens = code
+    code
     |> String.replace("(", " ( ")
     |> String.replace(")", " ) ")
     |> String.split()
+    |> parse([])
   end
 
   def eval(expression) do
@@ -29,7 +47,7 @@ defmodule Elisper do
     |> String.trim()
     |> read()
     |> eval()
-    |> IO.puts()
+    |> IO.inspect()
     main
   end
 
