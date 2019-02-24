@@ -39,41 +39,40 @@ defmodule Elisper do
   # end
 
   def eval_fn(expr, context) do
+    IO.inspect(expr, label: "eval> expr")
     case expr do
-      ["def", varname | rest] -> State.Map.put(context, varname, eval(rest, context))
-      ["defn", fnname | rest] -> State.Map.put(context, fnname, eval(rest, context))
+      ["def", varname, val] -> State.Map.put(context, varname, eval(val, context))
+      #["defn", fnname | rest] -> State.Map.put(context, fnname, eval(rest, context))
       [func | args] -> (eval(func, context)).(for expr <- args, do: eval(expr, context))
     end
   end
 
-
   def eval([expr | _], context) when is_list(expr) do
-    IO.inspect(expr, label: "eval> expr")
     eval_fn(expr, context)
   end
   def eval(expr, context) when is_list(expr) do
-    IO.inspect(expr, label: "eval> expr")
     eval_fn(expr, context)
   end
   def eval(atom, context) when is_number(atom) do
-    IO.inspect(atom, label: "eval> number")
     atom
   end
   def eval(atom, context) do
-    atom = State.Map.get(context, atom)
-    IO.inspect(atom, label: "eval> atom")
-    atom
+    State.Map.get(context, atom)
   end
 
-  def main do
+  def main() do
     {:ok, context} = State.Map.start_link()
+    repl(context)
+  end
+
+  def repl(context) do
     code = IO.gets "> "
     code
     |> String.trim()
     |> read()
     |> eval(context)
     |> IO.inspect()
-    main
+    repl(context)
   end
 
 end

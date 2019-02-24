@@ -13,12 +13,11 @@ defmodule State.Map do
   end
 
   def get(pid, key) do
-    IO.inspect(key, label: "key")
     Agent.get(pid, &Map.get(&1, key))
   end  
 
-  def put(pid, key, value) do  
-    Agent.update(pid, &Map.put(&1, key, value))  
+  def put(pid, key, value) do
+    Agent.update(pid, &Map.put(&1, key, value))
   end
 
 end
