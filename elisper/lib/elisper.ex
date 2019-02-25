@@ -25,24 +25,11 @@ defmodule Elisper do
     |> expression([])
   end
 
-  # def find_n_apply(context, func, args) do
-  #   fn_found = State.Map.get(context, func)
-  #   case fn_found do
-  #     nil -> "Error: undefined reference #{fn_ref}"
-  #     _   -> fn_found.(args)
-  #   end
-  # end
-
-  ## add error handling to denote Undefined Reference Exception
-  # def apply(func, args, context) do
-  #   State.Map.get(context, func).(for expr <- args, do: eval(expr))
-  # end
 
   def eval_fn(expr, context) do
     IO.inspect(expr, label: "eval> expr")
     case expr do
       ["def", varname, val] -> State.Map.put(context, varname, eval(val, context))
-      #["defn", fnname | rest] -> State.Map.put(context, fnname, eval(rest, context))
       [func | args] -> (eval(func, context)).(for expr <- args, do: eval(expr, context))
     end
   end

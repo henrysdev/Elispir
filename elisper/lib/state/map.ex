@@ -9,6 +9,7 @@ defmodule State.Map do
       "-" => &Enum.reduce(&1, fn x, acc -> acc - x end),
       "*" => &Enum.reduce(&1, fn x, acc -> acc * x end),
       "/" => &Enum.reduce(&1, fn x, acc -> acc / x end),
+      "prn" => &Enum.reduce([&1], fn x, acc -> acc ++ x end),
     } end)  
   end
 
